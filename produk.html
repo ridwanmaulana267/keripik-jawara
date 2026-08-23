@@ -65,7 +65,7 @@
       <div class="footer-col">
         <h4>Hubungi</h4>
         <a href="kontak.html">Kontak Kami</a>
-        <a href="https://wa.me/6281234567890">WhatsApp</a>
+        <a href="https://wa.me/6281313088100">WhatsApp</a>
       </div>
     </div>
   </div>
@@ -137,5 +137,67 @@
     </div>
   </div>
 </div>
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0MUIHEc6ogcJm1Dq__YdXiKIlikrMFqGMKfOLpjoa8HsREXpP4gqQD_bjBLlBQggL/exec";
+  const WA_NUMBER = "6281313088100"; // Ganti nomor WA Anda
+
+  let selectedProduct = null;
+
+  async function loadProducts() {
+    const container = document.getElementById('produk-container');
+    const loading = document.getElementById('loading');
+
+    try {
+      const response = await fetch(SCRIPT_URL);
+      const products = await response.json();
+
+      loading.style.display = 'none';
+      container.innerHTML = '';
+
+      products.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'pack-card';
+        card.innerHTML = `
+          <div class="pack-card-body">
+            <img src="${item.gambar || 'https://via.placeholder.com/400x300'}" alt="${item.nama || 'Produk'}" style="margin:-26px -26px 18px; width:calc(100% + 52px); height:190px;">
+            <h3>${item.nama || ''}</h3>
+            <p>${item.deskripsi || ''}</p>
+            <div class="price-tag">${item.harga || ''}</div>
+            <button onclick="openModal('${encodeURIComponent(JSON.stringify(item))}')" class="btn btn-primary btn-block">Tambah ke Keranjang</button>
+          </div>`;
+        container.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      loading.innerText = 'Gagal memuat katalog produk.';
+    }
+  }
+
+  function openModal(itemData) {
+    selectedProduct = JSON.parse(decodeURIComponent(itemData));
+    document.getElementById('modalTitle').innerText = selectedProduct.nama;
+    document.getElementById('modalPrice').innerText = selectedProduct.harga;
+    document.getElementById('orderQty').value = 1;
+    document.getElementById('orderModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('orderModal').style.display = 'none';
+  }
+
+  function sendToWA() {
+    const qty = document.getElementById('orderQty').value || 1;
+    const textMessage = `Halo Admin Keripik Jawara, saya mau pesan:\n\n` +
+                        `*Produk:* ${selectedProduct.nama}\n` +
+                        `*Harga:* ${selectedProduct.harga}\n` +
+                        `*Jumlah:* ${qty} bungkus\n\n` +
+                        `Mohon informasi total harga dan nomor rekeningnya. Terima kasih!`;
+    
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(textMessage)}`, '_blank');
+    closeModal();
+  }
+
+  loadProducts();
+</script>
 </body>
 </html>
