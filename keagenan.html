@@ -1,104 +1,654 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Keagenan — Keripik Jawara</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keagenan — Keripik Jawara App</title>
+  <meta name="description" content="Program kemitraan resmi keagenan Keripik Jawara dengan margin menarik dan dukungan penuh.">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Combined Web App Styles -->
+  <style>
+    :root {
+      --primary: #d92626;
+      --primary-hover: #b81d1d;
+      --primary-soft: rgba(217, 38, 38, 0.1);
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #0f172a;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.app-body {
+      font-family: var(--font-family);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+
+    @media (min-width: 992px) {
+      body.app-body {
+        padding-bottom: 0;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation (Desktop) */
+    .app-sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      color: #fff;
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    @media (min-width: 992px) {
+      .app-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #fff;
+    }
+
+    .logo-icon, .logo-text span {
+      color: var(--primary);
+    }
+
+    .sidebar-menu {
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* Main Area */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    @media (min-width: 992px) {
+      .app-main {
+        margin-left: 260px;
+      }
+    }
+
+    /* Topbar Header */
+    .app-topbar {
+      height: 70px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .topbar-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-main);
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .topbar-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-app-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-app-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .badge {
+      background: #fff;
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    /* Content Area */
+    .app-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Hero Banner Card */
+    .hero-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%), var(--hero-img);
+      background-blend-mode: overlay;
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--primary);
+      background: rgba(217, 38, 38, 0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .hero-card h2 {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero-card p.lede {
+      color: #94a3b8;
+      font-size: 1rem;
+      max-width: 600px;
+    }
+
+    /* Kemitraan Main Layout */
+    .agen-app-wrapper {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 992px) {
+      .agen-app-wrapper {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .agen-info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .agen-info-card h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .agen-info-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .agen-perks {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .agen-perks li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .perk-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary-soft);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Pricing Package Card */
+    .agen-price-card {
+      background: var(--bg-card);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .badge-populer {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .price-header small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .price-amount {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .price-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    /* App Footer */
+    .app-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    .app-footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .app-footer-links a:hover {
+      color: var(--primary);
+    }
+
+    @media (min-width: 768px) {
+      .app-footer {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    @media (min-width: 992px) {
+      .mobile-bottom-nav {
+        display: none;
+      }
+    }
+
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+    }
+  </style>
 </head>
-<body>
-<div class="grain"></div>
+<body class="app-body">
 
-<header class="site-header">
-  <a href="index.html" class="wordmark">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3c3 0 9 1 11 6 1.5 3.6-1 8-5 8-1 2.5-3.3 4-5.5 4C3.5 21 2 18 3 15.3 1.2 13.6 1 10.7 3 8c1.4-2 3-3.4 3-5z"/></svg>
-    <span class="wordmark-text">Keripik <span>Jawara</span></span>
-  </a>
-  <nav class="main-nav">
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang</a>
-    <a href="produk.html">Produk</a>
-    <a href="keagenan.html" class="active">Keagenan</a>
-    <a href="toko.html">Toko</a>
-    <a href="galeri.html">Galeri</a>
-    <a href="blog.html">Blog</a>
-    <a href="kontak.html">Kontak</a>
+  <div class="app-layout">
+    <!-- Desktop Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="app-logo">
+          <i data-lucide="flame" class="logo-icon"></i>
+          <span class="logo-text">Jawara<span>App</span></span>
+        </a>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="index.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="tentang.html" class="nav-item"><i data-lucide="info"></i> Tentang Kami</a>
+        <a href="produk.html" class="nav-item"><i data-lucide="shopping-bag"></i> Katalog Produk</a>
+        <a href="keagenan.html" class="nav-item active"><i data-lucide="users"></i> Keagenan</a>
+        <a href="toko.html" class="nav-item"><i data-lucide="map-pin"></i> Lokasi Toko</a>
+        <a href="galeri.html" class="nav-item"><i data-lucide="image"></i> Galeri</a>
+        <a href="blog.html" class="nav-item"><i data-lucide="newspaper"></i> Artikel & Blog</a>
+        <a href="kontak.html" class="nav-item"><i data-lucide="phone-call"></i> Bantuan & Kontak</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar"><i data-lucide="user"></i></div>
+          <div class="user-info">
+            <span class="user-name">Pengunjung</span>
+            <span class="user-role">Agen / Pembeli</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Topbar Header -->
+      <header class="app-topbar">
+        <div class="topbar-search">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Cari info kemitraan, syarat, agen...">
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" aria-label="Notifikasi"><i data-lucide="bell"></i></button>
+          <a href="produk.html" class="btn btn-app-primary">
+            <i data-lucide="shopping-cart"></i>
+            <span>Keranjang</span>
+            <span class="badge">0</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- App Body Content -->
+      <div class="app-content">
+        
+        <!-- Hero Header -->
+        <section class="hero-card" style="--hero-img: url('https://images.unsplash.com/photo-1607083681678-af1c72dd5f76?auto=format&fit=crop&w=1600&q=80');">
+          <span class="eyebrow">Kemitraan</span>
+          <h2>Jadi bagian dari #PasukanJawara.</h2>
+          <p class="lede">Program kemitraan resmi dengan margin kompetitif dan dukungan penuh dari kami.</p>
+        </section>
+
+        <!-- Kemitraan Details Grid -->
+        <div class="agen-app-wrapper">
+          
+          <!-- Information Card -->
+          <div class="agen-info-card">
+            <span class="eyebrow">Program Kemitraan</span>
+            <h3>Dapatkan margin hingga 40% sebagai mitra resmi.</h3>
+            <p>Kami membuka kesempatan bagi siapa saja yang ingin membangun usaha camilan di kotanya masing-masing, lengkap dengan dukungan penuh dari tim Jawara.</p>
+
+            <ul class="agen-perks">
+              <li>
+                <div class="perk-icon"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                <span>Harga grosir khusus untuk seluruh varian rasa.</span>
+              </li>
+              <li>
+                <div class="perk-icon"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                <span>Dukungan materi iklan dan foto produk siap pakai.</span>
+              </li>
+              <li>
+                <div class="perk-icon"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                <span>Pemasaran dibantu lewat website dan sosial media resmi.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pricing Card -->
+          <div class="agen-price-card">
+            <span class="badge-populer">Pilihan Utama</span>
+            <div class="price-header">
+              <small>Paket Awal Agen</small>
+              <div class="price-amount">Rp 500.000</div>
+              <p class="price-desc">Isi 50 bungkus siap jual, campur bebas semua varian rasa.</p>
+            </div>
+            <a href="kontak.html" class="btn btn-app-primary" style="width: 100%;">
+              <span>Daftar Agen Sekarang</span>
+              <i data-lucide="arrow-right" style="width:16px;"></i>
+            </a>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- App Footer -->
+      <footer class="app-footer">
+        <p>&copy; 2026 Keripik Jawara App. Hak Cipta Dilindungi.</p>
+        <div class="app-footer-links">
+          <a href="tentang.html">Tentang</a>
+          <a href="kontak.html">Kontak</a>
+          <a href="https://wa.me/6281313088100">WhatsApp</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="nav-tab">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="produk.html" class="nav-tab">
+      <i data-lucide="shopping-bag"></i>
+      <span>Katalog</span>
+    </a>
+    <a href="keagenan.html" class="nav-tab active">
+      <i data-lucide="users"></i>
+      <span>Keagenan</span>
+    </a>
+    <a href="toko.html" class="nav-tab">
+      <i data-lucide="map-pin"></i>
+      <span>Toko</span>
+    </a>
+    <a href="blog.html" class="nav-tab">
+      <i data-lucide="newspaper"></i>
+      <span>Blog</span>
+    </a>
   </nav>
-</header>
 
-<section class="hero hero-small" style="--hero-img: url('https://images.unsplash.com/photo-1607083681678-af1c72dd5f76?auto=format&fit=crop&w=1600&q=80');">
-  <div class="hero-inner">
-    <span class="eyebrow on-dark">Kemitraan</span>
-    <h2 style="font-size:clamp(32px,5vw,52px);">Jadi bagian dari #PasukanJawara.</h2>
-    <p class="lede">Program kemitraan resmi dengan margin kompetitif dan dukungan penuh dari kami.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <div class="agen-wrap">
-      <div class="agen-copy">
-        <span class="eyebrow on-dark">Program Kemitraan</span>
-        <h2 style="color:var(--paper); font-size:32px; margin-top:16px;">Dapatkan margin hingga 40% sebagai mitra resmi.</h2>
-        <p style="margin-top:16px;">Kami membuka kesempatan bagi siapa saja yang ingin membangun usaha camilan di kotanya masing-masing, lengkap dengan dukungan penuh dari tim Jawara.</p>
-        <ul class="agen-perks">
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            <span>Harga grosir khusus untuk seluruh varian rasa.</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            <span>Dukungan materi iklan dan foto produk siap pakai.</span>
-          </li>
-          <li>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-            <span>Pemasaran dibantu lewat website dan sosial media resmi.</span>
-          </li>
-        </ul>
-      </div>
-      <div class="agen-price">
-        <div class="amount"><small>Paket Awal Agen</small>Rp 500.000</div>
-        <p style="color:var(--charcoal-soft); margin:0;">Isi 50 bungkus siap jual, campur bebas semua varian rasa.</p>
-        <a href="kontak.html" class="btn btn-primary" style="margin-top:10px;">Daftar Agen Sekarang</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <a href="index.html" class="wordmark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3c3 0 9 1 11 6 1.5 3.6-1 8-5 8-1 2.5-3.3 4-5.5 4C3.5 21 2 18 3 15.3 1.2 13.6 1 10.7 3 8c1.4-2 3-3.4 3-5z"/></svg>
-        <span class="wordmark-text">Keripik <span>Jawara</span></span>
-      </a>
-      <p>Camilan singkong pedas rempah asli, diracik dari dapur UMKM Jawa Barat sejak 2021.</p>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h4>Jelajah</h4>
-        <a href="tentang.html">Tentang Kami</a>
-        <a href="produk.html">Beli Produk</a>
-        <a href="keagenan.html">Keagenan</a>
-      </div>
-      <div class="footer-col">
-        <h4>Lainnya</h4>
-        <a href="toko.html">Daftar Toko</a>
-        <a href="galeri.html">Galeri</a>
-        <a href="blog.html">Blog</a>
-      </div>
-      <div class="footer-col">
-        <h4>Hubungi</h4>
-        <a href="kontak.html">Kontak Kami</a>
-        <a href="https://wa.me/6281313088100">WhatsApp</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 Keripik Jawara. Hak Cipta Dilindungi.</span>
-    <span>Dibuat dengan renyah di Jawa Barat.</span>
-  </div>
-</footer>
-
+  <!-- JavaScript Logic -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
 </body>
 </html>
