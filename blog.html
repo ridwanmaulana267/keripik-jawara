@@ -1,97 +1,743 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — Keripik Jawara</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog & Artikel — Keripik Jawara App</title>
+  <meta name="description" content="Kumpulan tips, artikel, dan kabar terbaru seputar Keripik Jawara.">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Combined Web App Styles -->
+  <style>
+    :root {
+      --primary: #d92626;
+      --primary-hover: #b81d1d;
+      --primary-soft: rgba(217, 38, 38, 0.1);
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-sidebar: #0f172a;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.app-body {
+      font-family: var(--font-family);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      overflow-x: hidden;
+      padding-bottom: 70px;
+    }
+
+    @media (min-width: 992px) {
+      body.app-body {
+        padding-bottom: 0;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .app-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation (Desktop) */
+    .app-sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      color: #fff;
+      display: none;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    @media (min-width: 992px) {
+      .app-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #fff;
+    }
+
+    .logo-icon, .logo-text span {
+      color: var(--primary);
+    }
+
+    .sidebar-menu {
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background-color: var(--primary);
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+
+    /* Main Area */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    @media (min-width: 992px) {
+      .app-main {
+        margin-left: 260px;
+      }
+    }
+
+    /* Topbar Header */
+    .app-topbar {
+      height: 70px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .topbar-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-main);
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .topbar-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-app-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-app-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .badge {
+      background: #fff;
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    /* Content Area */
+    .app-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .page-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-chip.active, .filter-chip:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Blog Grid UI */
+    .blog-app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .blog-thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .blog-card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .blog-tag {
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .blog-card-body h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .blog-card-body p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .blog-read {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.2s;
+    }
+
+    .blog-card:hover .blog-read {
+      gap: 10px;
+    }
+
+    /* Newsletter Banner */
+    .newsletter-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (min-width: 768px) {
+      .newsletter-banner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .newsletter-text h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .newsletter-text p {
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .newsletter-form input {
+      flex: 1;
+      padding: 10px 16px;
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      outline: none;
+      font-size: 0.85rem;
+    }
+
+    .newsletter-form input::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn-light {
+      background: #fff;
+      color: var(--bg-sidebar);
+      white-space: nowrap;
+    }
+
+    .btn-light:hover {
+      background: #f1f5f9;
+    }
+
+    /* App Footer */
+    .app-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    .app-footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .app-footer-links a:hover {
+      color: var(--primary);
+    }
+
+    @media (min-width: 768px) {
+      .app-footer {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+
+    @media (min-width: 992px) {
+      .mobile-bottom-nav {
+        display: none;
+      }
+    }
+
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+    }
+  </style>
 </head>
-<body>
-<div class="grain"></div>
+<body class="app-body">
 
-<header class="site-header">
-  <a href="index.html" class="wordmark">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3c3 0 9 1 11 6 1.5 3.6-1 8-5 8-1 2.5-3.3 4-5.5 4C3.5 21 2 18 3 15.3 1.2 13.6 1 10.7 3 8c1.4-2 3-3.4 3-5z"/></svg>
-    <span class="wordmark-text">Keripik <span>Jawara</span></span>
-  </a>
-  <nav class="main-nav">
-    <a href="index.html">Beranda</a>
-    <a href="tentang.html">Tentang</a>
-    <a href="produk.html">Produk</a>
-    <a href="keagenan.html">Keagenan</a>
-    <a href="toko.html">Toko</a>
-    <a href="galeri.html">Galeri</a>
-    <a href="blog.html" class="active">Blog</a>
-    <a href="kontak.html">Kontak</a>
+  <div class="app-layout">
+    <!-- Desktop Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="app-logo">
+          <i data-lucide="flame" class="logo-icon"></i>
+          <span class="logo-text">Jawara<span>App</span></span>
+        </a>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="index.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="tentang.html" class="nav-item"><i data-lucide="info"></i> Tentang Kami</a>
+        <a href="produk.html" class="nav-item"><i data-lucide="shopping-bag"></i> Katalog Produk</a>
+        <a href="keagenan.html" class="nav-item"><i data-lucide="users"></i> Keagenan</a>
+        <a href="toko.html" class="nav-item"><i data-lucide="map-pin"></i> Lokasi Toko</a>
+        <a href="galeri.html" class="nav-item"><i data-lucide="image"></i> Galeri</a>
+        <a href="blog.html" class="nav-item active"><i data-lucide="newspaper"></i> Artikel & Blog</a>
+        <a href="kontak.html" class="nav-item"><i data-lucide="phone-call"></i> Bantuan & Kontak</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar"><i data-lucide="user"></i></div>
+          <div class="user-info">
+            <span class="user-name">Pengunjung</span>
+            <span class="user-role">Agen / Pembeli</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Topbar Header -->
+      <header class="app-topbar">
+        <div class="topbar-search">
+          <i data-lucide="search"></i>
+          <input type="text" id="searchInput" onkeyup="filterBlog()" placeholder="Cari artikel, tips, atau berita...">
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" aria-label="Notifikasi"><i data-lucide="bell"></i></button>
+          <a href="produk.html" class="btn btn-app-primary">
+            <i data-lucide="shopping-cart"></i>
+            <span>Keranjang</span>
+            <span class="badge">0</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- App Body Content -->
+      <div class="app-content">
+        
+        <!-- Page Header -->
+        <section class="page-header">
+          <h2>Blog & Artikel Terkini</h2>
+          <p>Baca tips seputar camilan, resep unik, dan update informasi terbaru dari Keripik Jawara[cite: 5].</p>
+        </section>
+
+        <!-- Category Filter Chips -->
+        <div class="filter-bar">
+          <button class="filter-chip active" onclick="filterCategory('all', this)">Semua Artikel</button>
+          <button class="filter-chip" onclick="filterCategory('tips', this)">Tips & Trik</button>
+          <button class="filter-chip" onclick="filterCategory('kabar', this)">Kabar & Promo</button>
+        </div>
+
+        <!-- Blog Cards Grid -->
+        <div class="blog-app-grid" id="blogContainer">
+          
+          <article class="blog-card" data-category="tips" data-title="5 cara menyimpan keripik agar tetap renyah" data-desc="tips simpel menjaga kualitas keripik walau bungkus sudah dibuka">
+            <img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=500&q=80" alt="Tips Keripik Renyah" class="blog-thumb" loading="lazy">
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Tips</span>
+                <span>•</span>
+                <span>12 Jul 2026[cite: 5]</span>
+              </div>
+              <h3>5 Cara Menyimpan Keripik Agar Tetap Renyah[cite: 5]</h3>
+              <p>Tips simpel menjaga kualitas keripik walau bungkus sudah dibuka[cite: 5].</p>
+              <a href="#" class="blog-read">
+                <span>Baca Selengkapnya</span>
+                <i data-lucide="arrow-right" style="width:16px;"></i>
+              </a>
+            </div>
+          </article>
+
+          <article class="blog-card" data-category="kabar" data-title="bocoran rasa baru bulan depan" data-desc="simak varian terbaru yang bakal menggoyang lidah kamu">
+            <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=500&q=80" alt="Bocoran Rasa Baru" class="blog-thumb" loading="lazy">
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span class="blog-tag">Kabar</span>
+                <span>•</span>
+                <span>28 Jun 2026[cite: 5]</span>
+              </div>
+              <h3>Bocoran Rasa Baru Bulan Depan![cite: 5]</h3>
+              <p>Simak varian terbaru yang bakal menggoyang lidah kamu[cite: 5].</p>
+              <a href="#" class="blog-read">
+                <span>Baca Selengkapnya</span>
+                <i data-lucide="arrow-right" style="width:16px;"></i>
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Newsletter Subscription Banner -->
+        <section class="newsletter-banner">
+          <div class="newsletter-text">
+            <h3>Dapatkan Info & Promo Spesial</h3>
+            <p>Berlangganan newsletter kami untuk mendapatkan update artikel dan diskon menarik.</p>
+          </div>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Terima kasih telah berlangganan!');">
+            <input type="email" placeholder="Masukkan email Anda..." required>
+            <button type="submit" class="btn btn-light">Langganan</button>
+          </form>
+        </section>
+
+      </div>
+
+      <!-- App Footer -->
+      <footer class="app-footer">
+        <p>&copy; 2026 Keripik Jawara App. Hak Cipta Dilindungi[cite: 5].</p>
+        <div class="app-footer-links">
+          <a href="tentang.html">Tentang</a>
+          <a href="kontak.html">Kontak</a>
+          <a href="https://wa.me/6281313088100">WhatsApp</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="mobile-bottom-nav">
+    <a href="index.html" class="nav-tab">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="produk.html" class="nav-tab">
+      <i data-lucide="shopping-bag"></i>
+      <span>Katalog</span>
+    </a>
+    <a href="keagenan.html" class="nav-tab">
+      <i data-lucide="users"></i>
+      <span>Keagenan</span>
+    </a>
+    <a href="toko.html" class="nav-tab">
+      <i data-lucide="map-pin"></i>
+      <span>Toko</span>
+    </a>
+    <a href="blog.html" class="nav-tab active">
+      <i data-lucide="newspaper"></i>
+      <span>Blog</span>
+    </a>
   </nav>
-</header>
 
-<section class="hero hero-small" style="--hero-img: url('https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=1600&q=80');">
-  <div class="hero-inner">
-    <span class="eyebrow on-dark">Baca-Baca</span>
-    <h2 style="font-size:clamp(32px,5vw,52px);">Blog & artikel terkini.</h2>
-  </div>
-</section>
+  <!-- JavaScript Logic -->
+  <script>
+    function filterBlog() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.blog-card');
 
-<section class="section">
-  <div class="container">
-    <div class="grid">
-      <div class="blog-card">
-        <img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?auto=format&fit=crop&w=500&q=80" alt="Blog 1">
-        <div class="blog-card-body">
-          <span class="blog-date">12 Jul 2026 · Tips</span>
-          <h3>5 Cara Menyimpan Keripik Agar Tetap Renyah</h3>
-          <p>Tips simpel menjaga kualitas keripik walau bungkus sudah dibuka.</p>
-          <a href="#" class="blog-read">Baca Selengkapnya →</a>
-        </div>
-      </div>
-      <div class="blog-card">
-        <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=500&q=80" alt="Blog 2">
-        <div class="blog-card-body">
-          <span class="blog-date">28 Jun 2026 · Kabar</span>
-          <h3>Bocoran Rasa Baru Bulan Depan!</h3>
-          <p>Simak varian terbaru yang bakal menggoyang lidah kamu.</p>
-          <a href="#" class="blog-read">Baca Selengkapnya →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title');
+        const desc = card.getAttribute('data-desc');
 
-<footer class="site-footer">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <a href="index.html" class="wordmark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3c3 0 9 1 11 6 1.5 3.6-1 8-5 8-1 2.5-3.3 4-5.5 4C3.5 21 2 18 3 15.3 1.2 13.6 1 10.7 3 8c1.4-2 3-3.4 3-5z"/></svg>
-        <span class="wordmark-text">Keripik <span>Jawara</span></span>
-      </a>
-      <p>Camilan singkong pedas rempah asli, diracik dari dapur UMKM Jawa Barat sejak 2021.</p>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h4>Jelajah</h4>
-        <a href="tentang.html">Tentang Kami</a>
-        <a href="produk.html">Beli Produk</a>
-        <a href="keagenan.html">Keagenan</a>
-      </div>
-      <div class="footer-col">
-        <h4>Lainnya</h4>
-        <a href="toko.html">Daftar Toko</a>
-        <a href="galeri.html">Galeri</a>
-        <a href="blog.html">Blog</a>
-      </div>
-      <div class="footer-col">
-        <h4>Hubungi</h4>
-        <a href="kontak.html">Kontak Kami</a>
-        <a href="https://wa.me/6281313088100">WhatsApp</a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 Keripik Jawara. Hak Cipta Dilindungi.</span>
-    <span>Dibuat dengan renyah di Jawa Barat.</span>
-  </div>
-</footer>
+        if (title.includes(query) || desc.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
 
+    function filterCategory(category, element) {
+      document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+      element.classList.add('active');
+
+      const cards = document.querySelectorAll('.blog-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
 </body>
 </html>
